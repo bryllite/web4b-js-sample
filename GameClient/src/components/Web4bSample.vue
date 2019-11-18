@@ -387,13 +387,20 @@ export default {
       console.log("거래내역조회");
 
       var userAddress_ = this.currentUserAddress;
-      var isTxHash = true;
+      var isOnlyTxHash = true;
 
       //게임서버로 요청
-      gameServer.send('history', [userAddress_, isTxHash], (error, res) => {
+      gameServer.send('history', [userAddress_, isOnlyTxHash], (error, res) => {
         console.log(res[0]);
         this.logPrint('getHistory', res[0]);
-      });         
+      });     
+
+      //브릴라이트로 직접 요청
+      // web4bClientLib.GetHistory(userAddress_, isOnlyTxHash).then(res =>{
+      //   console.log(parseInt(res[0]));
+      //   this.logPrint('getBalance', res[0]);
+      //   this.myBalance = parseInt(res[0]);
+      // }).catch(console.log);      
     },
     sendPayout(toAddress, value) {
       console.log("외부계좌이체");
