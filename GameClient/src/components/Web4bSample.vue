@@ -212,8 +212,8 @@ export default {
     dialogConnect: {
       visible : false,
       gameServerHost :'ws://localhost:1846',
-      cyprusHost : 'ws://15.164.14.248:9627',
-      poaHost : 'ws://15.164.14.248:9034'
+      cyprusHost : 'ws://localhost:9627',
+      poaHost : 'ws://localhost:9034'
     },
     dialogNewUser: {
       visible : false,
