@@ -6,16 +6,27 @@ This sample shows you how to integrate web4b-js to your Game Server.
 Bryllite API for JS `web4b` is provided by [npmjs.com](https://www.npmjs.com/package/web4b/)
 
 ~~~bash
-npm install --save web4b
+npm install     // package.json "dependencies": {"json-rpc-ws", "web4b"}
 
 node app.js
 ~~~
+
+### In the Browser
+
+Use the prebuild `dist/web4b.min.js`
+
+~~~html
+<script type="text/javascript" src="./web4b.min.js"></script>
+~~~
+
+Then include `dist/web4b.min.js` in your html file.
+This will expose `web4b` on the window object.
 
 ### Create ApiService Instance
 
 * `BridgeUrl`: Bridge service endpoint.
 * `GameKey`: Game server private key.
-* `CoinBoxAddress`: Game server coinBox address.
+* `CoinBoxAddress`: Game server coinBox address.(coin retrieveAddress)
 
 ~~~js
 var bridgeUrl = "ws://localhost:9627";
@@ -26,16 +37,17 @@ var web3Cyprus = new Web3(new Web3.providers.WebsocketProvider(brylliteCyprusHos
 var web4bServerLib = new Web4bServerLib(web3Cyprus, gameKey, coinBoxAddress);
 ~~~
 
-### GameServer Address
+<!-- ### GameServer Address
 
 ~~~js
-var  gameaddress = web4bServerLib.getGameAddress();
-~~~
+var  gameServerAddress = web4bServerLib.getGameAddress();
+~~~ -->
 
 ### GameServer Balance
-* `GameServerAddress`: GameServer address.
+* `gameServerAddress`: GameServer coinbase address.
 
 ~~~js
+var  gameServerAddress = web4bServerLib.getGameAddress();
 web4bServerLib.GetBalance(gameServerAddress).then(console.log).catch(console.log);
 ~~~
 
@@ -43,10 +55,10 @@ web4bServerLib.GetBalance(gameServerAddress).then(console.log).catch(console.log
 * `uid`: Game user's unique identifier.
 * `address`: Game User's address.
 
-**Get User Address**
+<!-- **Get User Address** -->
 
 ~~~js
-// uid to address
+// gameUserAddress(uid to address)
 var address = web4bServerLib.getUserAddress(uid);
 
 // Balance
@@ -64,12 +76,12 @@ web4bServerLib.SendReward(toUserAddress, value, extra).then(txid => {
 
 ### Transaction between game users
 The game user(client) doesn't have a private key.
-So the game server should handle user's transfer request instead.
-When game user makes a transfer request to the game server, the transfer is processed after user authentication.
+So the game server should handle user's transfer request instead. When game user makes a transfer request to the game server, the transfer is processed after user authentication.
 
 ~~~js
-// user's private key, address
+// user's private key
 var signer = web4bServerLib.getUserPrivateKey(fromUid);
+// recipient address
 var to = web4bServerLib.getUserAddress(toUid);
 
 web4bServerLib.SendTransfer(signer, to, value, extra).then(txid => {
@@ -83,20 +95,18 @@ In order to use it on a mainnet, user must withdraw it to an account outside the
 The game server should handle user's payout request instead after authentication.
 
 ~~~js
-//gameServer payout api
 var signer = web4bServerLib.getUserPrivateKey(uid); // user's private key
-var to = '' //mainnet address
+var to = '' // to mainnet address
 var value;  // value to payout
 
 web4bServerLib.SendPayout(signer, to, value, extra).then(txid => {
     console.log('txid ', txid);
 }).catch(console.log);
-
 ~~~
 
 ### Make sure payout request is complete
 Unlike transfer requests between game users (In-Game Tx), payout requests are not processed immediately.
-It takes some time for the block to be created on the Bryllite mainnet and the transaction to be included.
+It takes some time for the block to be created on the Bryllite mainnet and the transaction to be included. Use `web4bServerLib.GetReceipt()` method to check.
 
 ~~~js
 var txid = '';
@@ -106,14 +116,13 @@ web4bServerLib.GetReceipt(txid).then(data => {
 }).catch(console.log);
 ~~~
 
-### Buying items on game shop
+### Buying items
 The game user can use coins to buy items provided by the game service.
-When a game user buy an item, the purchase amount is credited to `coinBoxAddress`.
+When a game user buy an item, the purchase amount is credited to `coinBoxAddress(retrieveAddress)`.
 
 ~~~js
-// gameServer buy api
 // user's balance -> coinBoxAddress
-var signer  = web4bServerLib.getUserPrivateKey(uid);
+var signer  = web4bServerLib.getUserPrivateKey(uid);    // user's private key
 var value;  //item.value
 
 web4bServerLib.SendBuy(signer, value, extra).then(txid => {
@@ -121,11 +130,11 @@ web4bServerLib.SendBuy(signer, value, extra).then(txid => {
 }).catch(console.log);
 ~~~
 
-### history
-
+### Transaction History
+The game user can check user's transaction history.
 ~~~js
-//gameServer history api
-web4bServerLib.GetHistory(userAddress, isTxHash).then(data => {
+val isTxidOnly = false;
+web4bServerLib.GetHistory(userAddress, isTxidOnly).then(data => {
         console.log(data);
     }        
 ).catch(console.log);  
