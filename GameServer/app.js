@@ -2,7 +2,7 @@
 var Web3 = require('web3');
 var Web4bServerLib = require("web4b").ServerLib;
 
-var bridgeUrl = 'ws://localhost:9627';   //bryllite Bridge service endpoint.
+var bridgeUrl = 'ws://127.0.0.1:4742';   //bryllite Bridge service endpoint.
 var gameKey = '0x71807c6849611ea301bd79e53e73bc43835ba7c12c5a819014e8b1d0f575b3a4'; //gameserver private key.
 var coinBoxAddress = '0xfd57fea19208081fd28a3840a75bc8e58ee6dcd3';   //gameserver coinBox address.
 var gamePort = 1846;    //gameserver port
@@ -58,11 +58,12 @@ server.expose('getAccessToken', function (params, callback) {
     var hash = params[0];
     var iv = params[1];
     var address = params[2];
-
-    var accessToken = web4bServerLib.GetAccessToken(hash, iv, address)    
-    console.log('accessToken :' + accessToken);
-    
-    callback(null, [accessToken]);
+   
+    web4bServerLib.GetAccessToken(hash, iv, address)
+    .then(accessToken => {
+        console.log('accessToken :', accessToken);
+        callback(null, [accessToken]);
+    }).catch(console.log);     
 });
 
 //gameServer coin balance api

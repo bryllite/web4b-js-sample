@@ -211,9 +211,9 @@ export default {
     myBalance: 0,
     dialogConnect: {
       visible : false,
-      gameServerHost :'ws://localhost:1846',
-      cyprusHost : 'ws://localhost:9627',
-      poaHost : 'ws://localhost:9034'
+      gameServerHost :'ws://127.0.0.1:1846',
+      cyprusHost : 'ws://127.0.0.1:4742',
+      poaHost : 'ws://127.0.0.1:9034'      
     },
     dialogNewUser: {
       visible : false,
@@ -325,8 +325,9 @@ export default {
         // send PoA arguments to game server and receives accessToken
         gameServer.send('getAccessToken', [hash, iv, this.currentUserAddress], (error, res) => {
             var accessToken = res[0];
-            // POA 서비스에 accessToken 전달 (참여증명완료)
-            web4bClientLib.PoaResponse(this.currentUserAddress, accessToken).then(console.log).catch(console.log);
+            console.log('accessToken ', accessToken);
+            // POA 서비스에 accessToken 전달 (참여증명완료) 
+            web4bClientLib.PoaResponse(this.currentUserId, this.currentUserAddress, accessToken).then(console.log).catch(console.log);
         });
     },
     getBalance() {
@@ -337,9 +338,9 @@ export default {
         console.log(parseInt(res[0]));
         this.logPrint('getBalance', res[0]);
         this.myBalance = parseInt(res[0]);
-      });         
+      });
 
-      //브릴라이트로 직접 요청
+      // 브릴라이트로 직접 요청
       // web4bClientLib.GetBalance(this.currentUserAddress).then(res =>{
       //   console.log(parseInt(res[0]));
       //   this.logPrint('getBalance', res[0]);

@@ -11,6 +11,6 @@
   "license": "MIT",
   "dependencies": {
     "json-rpc-ws": "^7.0.1",
-    "web4b": "0.0.6"
+    "web4b": "0.0.7"
   }
 }
